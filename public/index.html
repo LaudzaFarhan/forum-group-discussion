@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,6 +65,18 @@
         height: 60px; /* Approx 3 lines of text */
       }
     </style>
+    <script>
+      // Set theme on initial load to prevent FOUC (Flash of Unstyled Content)
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
   </head>
   <body
     class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
@@ -239,20 +251,6 @@
               rows="3"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
               placeholder="Add any additional comments or context..."></textarea>
-          </div>
-          <div>
-            <label
-              for="log-solution"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Solution</label
-            >
-            <textarea
-              id="log-solution"
-              name="solution"
-              rows="3"
-              required
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg"
-              placeholder="Describe the proposed solution or intervention..."></textarea>
           </div>
           <div class="text-right">
             <button
@@ -531,9 +529,136 @@
               class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Solutions from Instructors
             </h4>
-            <div id="details-modal-solutions-container" class="space-y-4">
+            <div
+              id="details-modal-solutions-container"
+              class="space-y-4 max-h-96 overflow-y-auto pr-2">
               <!-- Solutions will be injected here -->
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="log-details-modal"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div
+        class="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-900">
+        <div class="flex justify-between items-center mb-4">
+          <h3
+            id="log-details-modal-title"
+            class="text-xl leading-6 font-medium text-gray-900 dark:text-white">
+            Log Details
+          </h3>
+          <button
+            id="modal-log-details-close"
+            class="text-gray-400 hover:text-gray-600">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="max-h-[70vh] grid grid-cols-1 md:grid-cols-2 gap-x-6">
+          <!-- Left Column: Log Details -->
+          <div class="overflow-y-auto pr-4 space-y-4">
+            <div>
+              <h4 class="font-semibold text-gray-800 dark:text-white">
+                Student
+              </h4>
+              <p
+                id="log-details-student"
+                class="text-gray-600 dark:text-gray-400"></p>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-800 dark:text-white">Level</h4>
+              <p
+                id="log-details-level"
+                class="text-gray-600 dark:text-gray-400"></p>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-800 dark:text-white">
+                Behavior
+              </h4>
+              <p
+                id="log-details-behavior"
+                class="text-gray-600 dark:text-gray-400 whitespace-pre-wrap"></p>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-800 dark:text-white">
+                Comment
+              </h4>
+              <p
+                id="log-details-comment"
+                class="text-gray-600 dark:text-gray-400 whitespace-pre-wrap"></p>
+            </div>
+          </div>
+          <!-- Right Column: Solutions -->
+          <div
+            class="overflow-y-auto md:border-l border-gray-200 dark:border-gray-700 md:pl-6 mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-t-0">
+            <h4
+              class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              Solutions
+            </h4>
+            <div
+              id="log-details-solutions-container"
+              class="space-y-4 max-h-56 overflow-y-auto pr-2 mb-6">
+              <!-- Log Solutions will be injected here -->
+            </div>
+            <form
+              id="log-solution-form"
+              class="space-y-4 border-t dark:border-gray-700 pt-4">
+              <div>
+                <label
+                  for="log-solution-instructor"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Your Name</label
+                >
+                <input
+                  type="text"
+                  id="log-solution-instructor"
+                  required
+                  class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md" />
+              </div>
+              <div>
+                <label
+                  for="log-solution-location"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Your Location</label
+                >
+                <select
+                  id="log-solution-location"
+                  required
+                  class="form-select w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md"></select>
+              </div>
+              <div>
+                <label
+                  for="log-solution-text"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Proposed Solution</label
+                >
+                <textarea
+                  id="log-solution-text"
+                  rows="3"
+                  required
+                  class="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md"></textarea>
+              </div>
+              <div class="text-right">
+                <button
+                  type="submit"
+                  class="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700">
+                  Submit Solution
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -648,7 +773,6 @@
       const casesLoadingState = document.getElementById("cases-loading-state");
       const viewAllCasesBtn = document.getElementById("view-all-cases-btn");
       const clearSelectionBtn = document.getElementById("clear-selection-btn");
-      const themeToggle = document.getElementById("theme-toggle");
 
       // Modals
       const deleteModal = document.getElementById("delete-modal");
@@ -669,14 +793,21 @@
       const caseGroupFilter = document.getElementById("case-group-filter");
       const viewDetailsModal = document.getElementById("view-details-modal");
       const modalDetailsClose = document.getElementById("modal-details-close");
+      const logDetailsModal = document.getElementById("log-details-modal");
+      const modalLogDetailsClose = document.getElementById(
+        "modal-log-details-close"
+      );
+      const logSolutionForm = document.getElementById("log-solution-form");
 
       // --- App State ---
       let currentUserId = null;
       let itemToDelete = { id: null, type: null };
       let allStudentLogs = [];
       let allCaseSolutions = [];
+      let allLogSolutions = [];
       let allCases = [];
       let selectedCaseId = null;
+      let selectedLogId = null;
 
       const locationOptions = [
         "The Lab Puri Indah",
@@ -686,6 +817,17 @@
         "The Lab Pondok Indah",
       ];
       const levelOptions = [
+        "Kinder Foundation",
+        "Kinder Term 1",
+        "Kinder Term 2",
+        "Kinder Term 3",
+        "Kinder Term 4",
+        "Junior Foundation 1",
+        "Junior Foundation 2",
+        "Junior Term 1",
+        "Junior Term 2",
+        "Junior Term 3",
+        "Junior Term 4",
         "Basic 1",
         "Basic 2",
         "Intermediate 1",
@@ -703,6 +845,7 @@
         "Coder Low Level",
         "Coder High Level",
       ];
+      const solutionStatusOptions = ["Pending", "Effective", "Ineffective"];
 
       // --- Authentication ---
       onAuthStateChanged(auth, (user) => {
@@ -722,6 +865,7 @@
       const studyCasesCollectionRef = collection(db, "studyCases");
       const studentLogsCollectionRef = collection(db, "studentLogs");
       const caseSolutionsCollectionRef = collection(db, "caseSolutions");
+      const logSolutionsCollectionRef = collection(db, "logSolutions");
 
       // --- Functions ---
       function populateSelects() {
@@ -739,6 +883,8 @@
         document.getElementById("solution-location").innerHTML = locationHTML;
         document.getElementById("log-student-level").innerHTML = levelHTML;
         document.getElementById("case-group").innerHTML = groupHTML;
+        document.getElementById("log-solution-location").innerHTML =
+          locationHTML;
         locationFilter.innerHTML =
           '<option value="all">All Locations</option>' + locationHTML;
         caseGroupFilter.innerHTML =
@@ -889,8 +1035,25 @@
             solEl.className =
               "p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600";
             solEl.innerHTML = `
-                        <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">${sol.solution}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-right">- ${sol.instructorName} (${sol.location})</p>
+                        <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">${
+                          sol.solution
+                        }</p>
+                        <div class="flex justify-between items-center mt-2 pt-2 border-t dark:border-gray-600">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">- ${
+                              sol.instructorName
+                            } (${sol.location})</p>
+                            <div class="flex items-center">
+                                <button data-solution-id="${
+                                  sol.id
+                                }" class="solution-agree-btn flex items-center text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 font-semibold transition">
+                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 18.734V11a2 2 0 012-2h2M7 11V7a2 2 0 012-2h2"></path></svg>
+                                    Agree
+                                </button>
+                                <span class="ml-2 text-green-600 dark:text-green-400 font-bold">${
+                                  sol.agreements || 0
+                                }</span>
+                            </div>
+                        </div>
                     `;
             solutionsContainer.appendChild(solEl);
           });
@@ -899,6 +1062,73 @@
             '<p class="text-gray-500 dark:text-gray-400">No solutions have been submitted for this case yet.</p>';
         }
         viewDetailsModal.classList.remove("hidden");
+      }
+
+      function showLogDetailsModal(logId) {
+        selectedLogId = logId;
+        const logData = allStudentLogs.find((l) => l.id === logId);
+        const solutions = allLogSolutions
+          .filter((s) => s.logId === logId)
+          .sort(
+            (a, b) =>
+              (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0)
+          );
+
+        document.getElementById(
+          "log-details-modal-title"
+        ).textContent = `Details for ${logData.studentName}`;
+        document.getElementById(
+          "log-details-student"
+        ).textContent = `${logData.studentName} (${logData.location})`;
+        document.getElementById("log-details-level").textContent =
+          logData.studentLevel;
+        document.getElementById("log-details-behavior").textContent =
+          logData.behavior;
+        document.getElementById("log-details-comment").textContent =
+          logData.comment || "N/A";
+
+        const solutionsContainer = document.getElementById(
+          "log-details-solutions-container"
+        );
+        solutionsContainer.innerHTML = "";
+
+        if (solutions.length > 0) {
+          solutions.forEach((sol) => {
+            const solEl = document.createElement("div");
+            solEl.className =
+              "p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600";
+            const statusColors = {
+              Pending: "bg-yellow-100 text-yellow-800",
+              Effective: "bg-green-100 text-green-800",
+              Ineffective: "bg-red-100 text-red-800",
+            };
+            const selectHTML = `<select data-solution-id="${
+              sol.id
+            }" class="log-solution-status-select text-xs font-semibold p-2 rounded-md border-0 focus:ring-2 focus:ring-blue-400 ${
+              statusColors[sol.status] || "bg-gray-100"
+            }">${solutionStatusOptions
+              .map(
+                (opt) =>
+                  `<option value="${opt}" ${
+                    sol.status === opt ? "selected" : ""
+                  }>${opt}</option>`
+              )
+              .join("")}</select>`;
+            solEl.innerHTML = `
+                        <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">${sol.solution}</p>
+                        <div class="flex justify-between items-center mt-2 pt-2 border-t dark:border-gray-600">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">- ${sol.instructorName} (${sol.location})</p>
+                            ${selectHTML}
+                        </div>
+                    `;
+            solutionsContainer.appendChild(solEl);
+          });
+        } else {
+          solutionsContainer.innerHTML =
+            '<p class="text-gray-500 dark:text-gray-400">No solutions have been submitted for this log yet.</p>';
+        }
+
+        logDetailsModal.classList.remove("hidden");
       }
 
       function handleCaseClick(caseId, caseTitle) {
@@ -933,7 +1163,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-3">Instructor</th><th scope="col" class="px-6 py-3">Student</th>
                     <th scope="col" class="px-6 py-3">Level</th><th scope="col" class="px-6 py-3">Location</th>
-                    <th scope="col" class="px-6 py-3">Behavior</th><th scope="col" class="px-6 py-3">Solution</th>
+                    <th scope="col" class="px-6 py-3">Behavior</th>
                     <th scope="col" class="px-6 py-3 text-center">Actions</th>
                 </tr>`;
 
@@ -949,7 +1179,7 @@
         tableBody.innerHTML = "";
         if (logsToRender.length === 0) {
           tableBody.innerHTML =
-            '<tr><td colspan="7" class="text-center p-8 text-gray-500 dark:text-gray-400">No student logs found.</td></tr>';
+            '<tr><td colspan="6" class="text-center p-8 text-gray-500 dark:text-gray-400">No student logs found.</td></tr>';
           return;
         }
         logsToRender.forEach((log) => {
@@ -962,8 +1192,10 @@
                     <td class="px-6 py-4">${log.studentName}</td>
                     <td class="px-6 py-4">${log.studentLevel}</td><td class="px-6 py-4">${log.location}</td>
                     <td class="px-6 py-4 max-w-xs truncate" title="${log.behavior}">${log.behavior}</td>
-                    <td class="px-6 py-4 max-w-xs truncate" title="${log.solution}">${log.solution}</td>
-                    <td class="px-6 py-4 text-center"><button class="delete-log-btn text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`;
+                    <td class="px-6 py-4 text-center">
+                        <button class="view-log-details-btn text-blue-600 dark:text-blue-400 hover:underline font-semibold mr-4">View Details</button>
+                        <button class="delete-log-btn text-red-500 hover:text-red-700 font-semibold">Delete</button>
+                    </td>`;
           tableBody.appendChild(tr);
         });
       }
@@ -1023,6 +1255,18 @@
         if (selectedCaseId === caseId) handleClearSelection();
       }
 
+      async function deleteLogAndSolutions(logId) {
+        const batch = writeBatch(db);
+        const solutionsQuery = query(
+          logSolutionsCollectionRef,
+          where("logId", "==", logId)
+        );
+        const solutionsSnapshot = await getDocs(solutionsQuery);
+        solutionsSnapshot.forEach((doc) => batch.delete(doc.ref));
+        batch.delete(doc(db, "studentLogs", logId));
+        await batch.commit();
+      }
+
       // --- Theme Toggling ---
       function applyTheme(theme) {
         const lightIcon = document.getElementById("theme-icon-light");
@@ -1037,13 +1281,6 @@
           darkIcon.classList.add("hidden");
         }
       }
-
-      themeToggle.addEventListener("click", () => {
-        const isDarkMode = document.documentElement.classList.contains("dark");
-        const newTheme = isDarkMode ? "light" : "dark";
-        localStorage.setItem("theme", newTheme);
-        applyTheme(newTheme);
-      });
 
       // --- Listeners ---
       function initializeListeners() {
@@ -1095,6 +1332,19 @@
                 '<tr><td colspan="4" class="text-center p-8 text-red-500">Error loading solutions.</td></tr>';
           }
         );
+        onSnapshot(
+          logSolutionsCollectionRef,
+          (snapshot) => {
+            allLogSolutions = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            if (selectedLogId) showLogDetailsModal(selectedLogId); // Refresh modal if open
+          },
+          (error) => {
+            console.error("Firestore error (logSolutions): ", error);
+          }
+        );
       }
 
       studentLogForm.addEventListener("submit", async (e) => {
@@ -1106,7 +1356,6 @@
           studentLevel: document.getElementById("log-student-level").value,
           behavior: document.getElementById("log-behavior").value,
           comment: document.getElementById("log-comment").value,
-          solution: document.getElementById("log-solution").value,
           createdAt: serverTimestamp(),
           authorId: currentUserId,
         });
@@ -1122,11 +1371,28 @@
             .value,
           location: document.getElementById("solution-location").value,
           solution: document.getElementById("solution-text").value,
+          agreements: 0,
           createdAt: serverTimestamp(),
           authorId: currentUserId,
         });
         caseSolutionForm.reset();
         showNotification("Solution added successfully!", "success");
+      });
+
+      logSolutionForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await addDoc(logSolutionsCollectionRef, {
+          logId: selectedLogId,
+          instructorName: document.getElementById("log-solution-instructor")
+            .value,
+          location: document.getElementById("log-solution-location").value,
+          solution: document.getElementById("log-solution-text").value,
+          status: "Pending",
+          createdAt: serverTimestamp(),
+          authorId: currentUserId,
+        });
+        logSolutionForm.reset();
+        showNotification("Solution for log added!", "success");
       });
 
       locationFilter.addEventListener("change", () => {
@@ -1164,11 +1430,13 @@
         const tableRow = e.target.closest("tr");
         if (tableRow) {
           const itemId = tableRow.dataset.id;
-          if (e.target.closest(".delete-log-btn")) {
+          if (e.target.closest(".view-log-details-btn")) {
+            showLogDetailsModal(itemId);
+          } else if (e.target.closest(".delete-log-btn")) {
             itemToDelete = { id: itemId, type: "log" };
             deleteModalTitle.textContent = "Delete Log Entry";
             deleteModalText.textContent =
-              "Are you sure you want to delete this log entry?";
+              "Are you sure? This will also delete all solutions for this log.";
             deleteModal.classList.remove("hidden");
           } else if (e.target.closest(".delete-solution-btn")) {
             itemToDelete = { id: itemId, type: "solution" };
@@ -1176,6 +1444,29 @@
             deleteModalText.textContent =
               "Are you sure you want to delete this solution?";
             deleteModal.classList.remove("hidden");
+          }
+        }
+
+        const solutionAgreeBtn = e.target.closest(".solution-agree-btn");
+        if (solutionAgreeBtn) {
+          const solutionId = solutionAgreeBtn.dataset.solutionId;
+          if (solutionId) {
+            await updateDoc(doc(db, "caseSolutions", solutionId), {
+              agreements: increment(1),
+            });
+          }
+        }
+
+        const logSolutionStatusSelect = e.target.closest(
+          ".log-solution-status-select"
+        );
+        if (logSolutionStatusSelect) {
+          const solutionId = logSolutionStatusSelect.dataset.solutionId;
+          const newStatus = logSolutionStatusSelect.value;
+          if (solutionId) {
+            await updateDoc(doc(db, "logSolutions", solutionId), {
+              status: newStatus,
+            });
           }
         }
       });
@@ -1212,6 +1503,10 @@
       modalDetailsClose.addEventListener("click", () =>
         viewDetailsModal.classList.add("hidden")
       );
+      modalLogDetailsClose.addEventListener("click", () => {
+        logDetailsModal.classList.add("hidden");
+        selectedLogId = null; // Clear selected log when closing
+      });
 
       modalDeleteCancel.addEventListener("click", () =>
         deleteModal.classList.add("hidden")
@@ -1223,8 +1518,8 @@
             await deleteCaseAndSolutions(itemToDelete.id);
             showNotification("Case and its solutions deleted!", "success");
           } else if (itemToDelete.type === "log") {
-            await deleteDoc(doc(db, "studentLogs", itemToDelete.id));
-            showNotification("Log entry deleted!", "success");
+            await deleteLogAndSolutions(itemToDelete.id);
+            showNotification("Log entry and its solutions deleted!", "success");
           } else if (itemToDelete.type === "solution") {
             await deleteDoc(doc(db, "caseSolutions", itemToDelete.id));
             showNotification("Solution deleted!", "success");
@@ -1239,17 +1534,29 @@
       });
 
       // --- Initial Load ---
-      const savedTheme = localStorage.getItem("theme");
-      const systemPrefersDark = window.matchMedia(
-        "(prefers-color-scheme: light)"
-      ).matches;
-      if (savedTheme) {
-        applyTheme(savedTheme);
-      } else if (systemPrefersDark) {
-        applyTheme("dark");
-      } else {
-        applyTheme("light");
-      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+
+        const savedTheme = localStorage.getItem("theme");
+        const systemPrefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        if (savedTheme) {
+          applyTheme(savedTheme);
+        } else if (systemPrefersDark) {
+          applyTheme("dark");
+        } else {
+          applyTheme("light");
+        }
+
+        themeToggle.addEventListener("click", () => {
+          const isDarkMode =
+            document.documentElement.classList.contains("dark");
+          const newTheme = isDarkMode ? "light" : "dark";
+          localStorage.setItem("theme", newTheme);
+          applyTheme(newTheme);
+        });
+      });
     </script>
   </body>
 </html>
